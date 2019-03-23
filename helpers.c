@@ -250,8 +250,10 @@ char *wordsep(char **s) {
 
 			wordend++;
 		}
-		if(*wordstart != *wordend)
+		if(*wordstart != *wordend) {
 			openQuote = 1;
+			wordend = wordstart;
+		}
 		else
 			wordstart++;
 	}
