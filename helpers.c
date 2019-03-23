@@ -43,7 +43,7 @@ char *strcat_bounded(char *dest, char *src, size_t dest_max_len) {
 char *findExe(char *exe) {
 
 	char *path_cpy = strdup(path);
-	char *test_path = malloc(PATH_MAX_SIZE * sizeof(char));
+	char *test_path = malloc(PATH_MAX_SIZE * sizeof(*test_path));
 
 	if(!test_path || !path_cpy)
 		return NULL;
@@ -53,7 +53,7 @@ char *findExe(char *exe) {
 	char *path_cpy_ptr = path_cpy;
 
 	while(path_cpy_ptr != NULL) {
-		memset(test_path, '\0', sizeof(test_path));
+		memset(test_path, '\0', (PATH_MAX_SIZE * sizeof(*test_path)) );
 		char *curr_tok = strsep(&path_cpy_ptr, ":");
 		strcpy(test_path, curr_tok);
 
@@ -158,7 +158,7 @@ char nextChar(char *s) {
 struct filenames parseFilenames(char *s) {
 	struct filenames fstruct;
 
-	fstruct.file = malloc(256 * sizeof(char*));
+	fstruct.file = malloc(256 * sizeof(*fstruct.file));
 	int i;
 	for(i = 0; i < 256 && s != NULL; i++) {
 		fstruct.file[i] = wordsep(&s);
@@ -312,7 +312,7 @@ char *wordsep(char **s) {
 
 size_t parseArgs(char *usr_cmd, char ***argv) {
 
-	char **args = malloc(CMD_ARGUMENTS_MAX * sizeof(char*));
+	char **args = malloc(CMD_ARGUMENTS_MAX * sizeof(*args));
 	size_t arg_cnt = 0;
 
 	//remove newline char
