@@ -561,7 +561,7 @@ int isBuiltin(char *cmd) {
 
 
 
-void executeBuiltin(struct command c) {
+void executeBuiltin(struct command c, struct commands *cmds, struct filenames *fns) {
 	//debug begin
 	if(DEBUG == "all" || DEBUG == "executeBuiltin") {
 		printf("DEBUG: executeBuiltin()\n");
@@ -589,20 +589,7 @@ void executeBuiltin(struct command c) {
 						printf("chdir succeeded\n");
 					}
 					//debug end
-					char *buf; 
-					for(int i = 1; i < 10; i++) {
-						buf = malloc(PATH_MAX_SIZE * i * sizeof(*buf));
-						if(getcwd(buf, PATH_MAX_SIZE * i) == NULL) {
-							if(errno == ENAMETOOLONG) {
-								free(buf);
-							}
-
-						}
-						else
-							break;
-					}
-					fwrite(buf, strlen(buf), 1, stdout);
-					free(buf);
+					pwd();
 				}
 
 			}
@@ -612,6 +599,8 @@ void executeBuiltin(struct command c) {
 				fwrite(error_message, strlen(error_message), 1, stderr);
 			}
 			else { 
+//				freeCommands(cmds);
+//				freeFilenames(fns);
 				exit(0);
 			}
 			break;
@@ -624,4 +613,52 @@ void executeBuiltin(struct command c) {
 		printf("\n");
 	}
 	//debug end
+}
+
+
+
+
+
+
+void pwd(void) {
+	char *buf;
+	int i;	
+
+	for(i = 1; i < 10; i++) {
+		buf = malloc(PATH_MAX_SIZE * i * sizeof(*buf));
+		if(getcwd(buf, PATH_MAX_SIZE * i) == NULL) {
+			if(errno == ENAMETOOLONG) {
+				free(buf);
+			}
+
+		}
+		else
+			break;
+	}
+	if(i == 10 && errno == ENAMETOOLONG) {
+		fwrite(error_message, strlen(error_message), 1, stderr);
+		return;
+	}
+	fwrite(buf, strlen(buf), 1, stdout);
+	free(buf);
+}
+
+
+
+
+
+
+void freeCommands(struct commands *c) {
+	for(size_t i = 0; i < c->count; i++) {
+		free(c->curr[i].argv);
+	}
+	free(c->curr);
+}
+
+
+
+
+
+void freeFilenames(struct filenames *fns) {
+		free(fns->file);
 }

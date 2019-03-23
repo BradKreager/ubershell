@@ -57,12 +57,13 @@ void runshell(int prompt) {
 	int rc[CMD_PARALLEL_MAX],
 	rc_wait[CMD_PARALLEL_MAX];
 	int redirect = 0;
+	struct commands	cmds;
+	char *pathname;
+	struct filenames fs;
 
 	if(prompt == 1)
 		fwrite("ubershell> ", 11, 1, stdout);
 	while ((linelen = getline(&line, &linesize, stdin)) != -1) {
-		size_t curr_thd = 0;
-		struct filenames fs;
 		//remove newline
 		line = strsep(&line, "\n");
 
@@ -108,9 +109,8 @@ void runshell(int prompt) {
 			printf("\nMain(): Calling parseParallelCmds()\n\n");
 		}
 		//debug end
-
-		struct commands	cmds = parseParallelCmds(input);
-		//			printf("cmds.count: %lu", cmds.count);
+		
+		cmds = parseParallelCmds(input);
 
 		//debug begin
 		if(DEBUG == "all" || DEBUG == "main") {
@@ -121,7 +121,7 @@ void runshell(int prompt) {
 		for(size_t i = 0; i < cmds.count && i < CMD_PARALLEL_MAX; i++) {
 
 			if( (int) cmds.curr[i].builtin > -1 ) {
-				executeBuiltin(cmds.curr[i]);
+				executeBuiltin(cmds.curr[i], &cmds, &fs);
 				continue;
 			}
 
@@ -144,7 +144,7 @@ void runshell(int prompt) {
 				printf("\n");
 				//debug end
 
-				char *pathname = findExe(cmds.curr[i].argv[0]);
+				pathname = findExe(cmds.curr[i].argv[0]);
 
 				if(redirect == 1) {
 					int fd = open(fs.file[0], O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
@@ -158,19 +158,19 @@ void runshell(int prompt) {
 				exit(1);
 			}
 		}
-		//			if parent, wait
-		//			for(size_t i = 0; i < cmds.count; i++) {
-		//				if(cmds.curr[i].builtin == -1)
-		//					rc_wait[i] = wait(NULL);
-		//			}
 		int rc_wt;
 		while(rc_wt = wait(NULL) > 0);
+
+
 		if(prompt == 1)
 			fwrite("\nubershell> ", 12, 1, stdout);
 		else
 			fwrite("\n", 1, 1, stdout);
 	}
 
+	free(pathname);
+	freeCommands(&cmds);
+	freeFilenames(&fs);
 	free(line);
 	if (ferror(stdin))
 		err(1, "getline");

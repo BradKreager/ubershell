@@ -15,7 +15,11 @@ size_t parseArgs(char *usr_cmd, char ***argv);
 void stripBoundingWhiteSpace(char *s);
 struct commands parseParallelCmds(char *usr_cmds);
 void replaceChar(char *s, char old, char new, int preserveWithinQuotes);
-void executeBuiltin(struct command c);
+void executeBuiltin(struct command c, struct commands *cmds, struct filenames *fns);
+//void executeBuiltin(struct command c);
 struct filenames parseFilenames(char *s);
+void pwd(void);
+void freeCommands(struct commands *c); 
+void freeFilenames(struct filenames *fns);
 
 #endif
