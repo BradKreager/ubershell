@@ -11,6 +11,15 @@ Run make within the main directory /ubershell:
 
 > make debug //will compile program with all stubs enabled
 
+## Running the Shell
+To run the shell type
+
+> ./ubershell
+
+To run the shell with a script
+
+> ./ubershell <scriptname>
+
 ## A Note on Debug Stubs
 Each function contains a multitude of debugging stubs that are encapsulated within\
 comments //debug begin and //debug end. Each function can have it's debugging stubs\
