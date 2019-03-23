@@ -18,7 +18,7 @@ To run the shell type
 
 To run the shell with a script
 
-> ./ubershell <scriptname>
+> ./ubershell \<scriptname\>
 
 ## A Note on Debug Stubs
 Each function contains a multitude of debugging stubs that are encapsulated within\
