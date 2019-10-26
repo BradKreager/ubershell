@@ -1,5 +1,4 @@
 # ubershell
-CMPE 142 ASSIGNMENT 1
 
 ## Build Instructions
 Run make within the main directory /ubershell:
