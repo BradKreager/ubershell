@@ -1,9 +1,6 @@
 # ubershell
 CMPE 142 ASSIGNMENT 1
 
-Author: Bradley Kreager
-SID: 012326886
-
 ## Build Instructions
 Run make within the main directory /ubershell:
 
